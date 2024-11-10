@@ -1,5 +1,6 @@
 package com.willdev.mitaxi.presentation.screens.auth.login.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,10 +38,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.willdev.mitaxi.R
+import com.willdev.mitaxi.presentation.components.DefaultButton
 import com.willdev.mitaxi.presentation.components.DefaultTextField
 import com.willdev.mitaxi.presentation.navigation.screen.auth.AuthScreen
+import com.willdev.mitaxi.presentation.screens.auth.login.LoginViewModel
 
 @Composable
 fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValues){
@@ -50,8 +55,8 @@ fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValu
     val colorTitles= colorResource(id = R.color.colorTitles)
 
     //variables
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    val vm:LoginViewModel= viewModel()
+    val state=vm.state
 
 
     //--------------------------------------------------------VISTA
@@ -154,13 +159,12 @@ fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValu
                 ){
                     DefaultTextField(
                         modifier = Modifier,
-                        value = email.value,
+                        value = state.email,
                         label = "Email",
                         onValueChange = {
-                            email.value=it
+                            vm.onEmailInput(it)
                         },
                         icon = Icons.Outlined.Email,
-                        hideText = false,
                         keyboardType = KeyboardType.Email
                     )
 
@@ -169,10 +173,10 @@ fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValu
                     )
                     DefaultTextField(
                         modifier = Modifier,
-                        value = password.value,
+                        value = state.password,
                         label = "Password",
-                        onValueChange = {
-                            password.value=it
+                        onValueChange = {password ->
+                            vm.onPasswordInput(password)
                         },
                         icon = Icons.Outlined.Lock,
                         hideText = true,
@@ -188,24 +192,15 @@ fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValu
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                 ){
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .padding(end = 20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorTitles
-                        ),
+                    DefaultButton(
+                        modifier = Modifier,
+                        text = "LOGIN",
                         onClick = {
-                            println("el valor de email es: ${email.value} ")
-                            println("el valor de email es: ${password.value} ")
+                            vm.loginSubmit()
                         }
-                    ) {
-                        Text(
-                            color = Color.White,
-                            text = "LOGIN",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+
+                    )
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
