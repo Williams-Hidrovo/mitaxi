@@ -17,7 +17,9 @@ import androidx.navigation.compose.rememberNavController
 import com.willdev.mitaxi.presentation.navigation.graph.root.RootNavGraph
 import com.willdev.mitaxi.presentation.screens.auth.login.LoginScreen
 import com.willdev.mitaxi.ui.theme.MitaxiTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
