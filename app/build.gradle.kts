@@ -63,8 +63,8 @@ dependencies {
     implementation(libs.androidx.material3)
 
     //DAGGER HILT
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation("androidx.hilt:hilt-*:1.2.0")
+    implementation(libs.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     testImplementation(libs.junit)

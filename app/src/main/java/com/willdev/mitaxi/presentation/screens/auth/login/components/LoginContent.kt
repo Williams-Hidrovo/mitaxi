@@ -1,6 +1,6 @@
 package com.willdev.mitaxi.presentation.screens.auth.login.components
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,24 +22,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.willdev.mitaxi.R
 import com.willdev.mitaxi.presentation.components.DefaultButton
@@ -48,15 +45,21 @@ import com.willdev.mitaxi.presentation.navigation.screen.auth.AuthScreen
 import com.willdev.mitaxi.presentation.screens.auth.login.LoginViewModel
 
 @Composable
-fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValues){
+fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValues,vm:LoginViewModel=hiltViewModel()){
     //colores
     val primary = colorResource(id = R.color.primary)
     val secondary = colorResource(id = R.color.secondary)
     val colorTitles= colorResource(id = R.color.colorTitles)
 
     //variables
-    val vm:LoginViewModel= viewModel()
     val state=vm.state
+    val context=LocalContext.current
+
+    LaunchedEffect(key1 = vm.errorMessage) {
+        if(vm.errorMessage.isNotEmpty()){
+            Toast.makeText(context,vm.errorMessage,Toast.LENGTH_LONG).show()
+        }
+    }
 
 
     //--------------------------------------------------------VISTA
@@ -196,7 +199,14 @@ fun LoginContent(navHostController: NavHostController,paddingValues: PaddingValu
                         modifier = Modifier,
                         text = "LOGIN",
                         onClick = {
-                            vm.loginSubmit()
+                            if(vm.isValidForm()){
+                                vm.loginSubmit()
+                            }
+                            else{
+                                vm.showError()
+
+                            }
+
                         }
 
                     )
